@@ -17,7 +17,7 @@
   const YEAR_BOOKED={2027:44};
   (()=>{const y=Object.keys(YEAR_LIMITS).map(Number).filter(v=>v>=new Date().getFullYear()).sort()[0]; if(!y) return;
     const left=Math.max(0,YEAR_LIMITS[y]-(YEAR_BOOKED[y]||0)), bk=YEAR_BOOKED[y]||0, el=document.createElement("div"); el.className="bc-banner"; el.setAttribute("role","status");
-    el.innerHTML=left>0?'<b>I\'d love to be part of your '+y+' wedding: just '+left+' full-day date'+(left===1?'':'s')+' left</b><span>'+bk+' couples have already said yes for '+y+'</span>':'<b>My '+y+' full-day dates are now all booked</b><span>I\'d love to hear about your '+(y+1)+' plans</span>';
+    el.innerHTML=left>0?'<b>I\'d love to be part of your wedding: '+left+' date'+(left===1?'':'s')+' left for '+y+'</b><span>'+bk+' couples have already said yes for '+y+'</span>':'<b>My '+y+' full-day dates are now all booked</b><span>I\'d love to hear about your '+(y+1)+' plans</span>';
     root.insertBefore(el,root.firstChild);})();
   // Packages, prices and rules carried over from the Booking Calendar artifact.
   const PACKAGES=[
