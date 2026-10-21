@@ -48,7 +48,7 @@
     const flush=()=>{const gc=window.goatcounter;if(!gc||!gc.count)return;while(q.length){try{gc.count(q.shift());}catch(e){}}};
     if(!window.goatcounter||!window.goatcounter.count){window.goatcounter=Object.assign(window.goatcounter||{},{no_onload:true});
       const s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://"+GOATCOUNTER+".goatcounter.com/count");s.onload=flush;document.head.appendChild(s);}
-    return(path,title,once)=>{if(once){if(sent.has(path))return;sent.add(path);}q.push({path:"cal/"+path,title:title||path,event:true});flush();};})();
+    return(path,title,once)=>{try{if(localStorage.getItem("skipgc")==="t")return;}catch(e){}if(once){if(sent.has(path))return;sent.add(path);}q.push({path:"cal/"+path,title:title||path,event:true});flush();};})();
   const isMid=d=>{const w=d.getDay();return w>=1&&w<=4;};
   const ord=n=>{const s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);};
   const full=d=>d.toLocaleDateString("en-GB",{weekday:"long"})+" "+ord(d.getDate())+" "+d.toLocaleDateString("en-GB",{month:"long"})+" "+d.getFullYear();
@@ -151,6 +151,12 @@
   grid.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40){month.setMonth(month.getMonth()+(dx>0?-1:1));render();}sx=null;},{passive:true});
   render();
   track("opened","Calendar opened",true);
-  if(gcMsg){const m=document.createElement("div");m.textContent=gcMsg;m.style.cssText="margin:0 auto 12px;max-width:720px;padding:10px 14px;border-radius:8px;background:#2F5D4E;color:#fff;font:600 14px/1.4 Manrope,system-ui,sans-serif;text-align:center";host.insertBefore(m,host.firstChild);}
+  const gcShow=t=>{let m=document.getElementById("stu-gc-msg");if(!m){m=document.createElement("div");m.id="stu-gc-msg";m.style.cssText="margin:0 auto 12px;max-width:720px;padding:10px 14px;border-radius:8px;background:#2F5D4E;color:#fff;font:600 14px/1.4 Manrope,system-ui,sans-serif;text-align:center";host.insertBefore(m,host.firstChild);}m.textContent=t;};
+  if(gcMsg)gcShow(gcMsg);
+  // Hidden switch for Stu: tap "STU TUCKER PHOTOGRAPHY" at the top of the calendar 5 times quickly to stop (or restart) counting your own visits on this device.
+  (()=>{const eb=host.querySelector(".eyebrow");if(!eb)return;let n=0,t=0;eb.addEventListener("click",()=>{const now=Date.now();n=now-t<1500?n+1:1;t=now;if(n<5)return;n=0;
+    try{const off=localStorage.getItem("skipgc")==="t";if(off)localStorage.removeItem("skipgc");else localStorage.setItem("skipgc","t");
+      gcShow(off?"Visit tracking is back ON for this device.":"Visit tracking is now OFF for this device, so your own visits won't be counted. Tap STU TUCKER PHOTOGRAPHY 5 times again to turn it back on.");}
+    catch(e){gcShow("This browser won't let the calendar remember that setting.");}});})();
 })();
 
