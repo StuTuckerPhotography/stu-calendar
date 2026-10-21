@@ -83,15 +83,16 @@
   let month=new Date(today.getFullYear(),today.getMonth(),1), sel=null;
   const grid=document.getElementById("bcGrid"), panel=document.getElementById("bcPanel");
   document.getElementById("bcDow").innerHTML=["M","T","W","T","F","S","S"].map(d=>'<div class="bc-dow">'+d+'</div>').join("");
+  const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
   const mSel=document.getElementById("bcMSel"), ySel=document.getElementById("bcYSel");
-  if(mSel&&ySel){mSel.innerHTML=["January","February","March","April","May","June","July","August","September","October","November","December"].map((n,i)=>'<option value="'+i+'">'+n+'</option>').join("");
+  if(mSel&&ySel){
     for(let y=today.getFullYear();y<=today.getFullYear()+3;y++)ySel.insertAdjacentHTML("beforeend",'<option value="'+y+'">'+y+'</option>');
     const go=()=>{month=new Date(+ySel.value,+mSel.value,1);render();};mSel.onchange=go;ySel.onchange=go;}
   function render(){
     const minM=new Date(today.getFullYear(),today.getMonth(),1); if(month<minM)month=new Date(minM);   // no going back before this month
     document.getElementById("bcPrev").disabled=month.getTime()===minM.getTime();
     document.getElementById("bcMonth").textContent=month.toLocaleDateString("en-GB",{month:"long",year:"numeric"});
-    if(mSel&&ySel){const yy=month.getFullYear();if(!ySel.querySelector('option[value="'+yy+'"]')){ySel.insertAdjacentHTML("beforeend",'<option value="'+yy+'">'+yy+'</option>');[...ySel.options].sort((a,b)=>a.value-b.value).forEach(o=>ySel.appendChild(o));}mSel.value=String(month.getMonth());ySel.value=String(yy);[...mSel.options].forEach(o=>o.disabled=yy===today.getFullYear()&&+o.value<today.getMonth());[...ySel.options].forEach(o=>o.disabled=+o.value<today.getFullYear());}
+    if(mSel&&ySel){const yy=month.getFullYear();if(!ySel.querySelector('option[value="'+yy+'"]')){ySel.insertAdjacentHTML("beforeend",'<option value="'+yy+'">'+yy+'</option>');[...ySel.options].sort((a,b)=>a.value-b.value).forEach(o=>ySel.appendChild(o));}const first=yy===today.getFullYear()?today.getMonth():0;if(mSel.dataset.first!==String(first)){mSel.dataset.first=String(first);mSel.innerHTML=MONTHS.slice(first).map((n,i)=>'<option value="'+(i+first)+'">'+n+'</option>').join("");}mSel.value=String(month.getMonth());ySel.value=String(yy);}
     const y=month.getFullYear(),m=month.getMonth(),off=(new Date(y,m,1).getDay()+6)%7,n=new Date(y,m+1,0).getDate();
     let h="";for(let i=0;i<off;i++)h+='<div class="bc-day empty"></div>';
     for(let d=1;d<=n;d++){const dt=new Date(y,m,d),k=key(dt);let c="bc-day",t="",a="";
