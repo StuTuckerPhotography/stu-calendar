@@ -151,6 +151,7 @@
   grid.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40){month.setMonth(month.getMonth()+(dx>0?-1:1));render();}sx=null;},{passive:true});
   render();
   track("opened","Calendar opened",true);
+  const host=document.getElementById("stu-calendar")||document.body;
   const gcShow=t=>{let m=document.getElementById("stu-gc-msg");if(!m){m=document.createElement("div");m.id="stu-gc-msg";m.style.cssText="margin:0 auto 12px;max-width:720px;padding:10px 14px;border-radius:8px;background:#2F5D4E;color:#fff;font:600 14px/1.4 Manrope,system-ui,sans-serif;text-align:center";host.insertBefore(m,host.firstChild);}m.textContent=t;};
   if(gcMsg)gcShow(gcMsg);
   // Hidden switch for Stu: tap "STU TUCKER PHOTOGRAPHY" at the top of the calendar 5 times quickly to stop (or restart) counting your own visits on this device.
