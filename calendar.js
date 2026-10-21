@@ -40,7 +40,11 @@
   // ---------- Anonymous activity tracking (GoatCounter, no cookies, no personal details) ----------
   // Put your GoatCounter code here (the bit before .goatcounter.com). Leave empty to switch tracking off.
   const GOATCOUNTER="stutucker";
-  const track=(()=>{if(!GOATCOUNTER)return()=>{};const q=[],sent=new Set();
+  // Open the calendar page with #stu-notrack on the end of the address to stop (or restart) counting your own visits on that browser.
+  let gcMsg="";try{if(location.hash==="#stu-notrack"){const off=localStorage.getItem("skipgc")==="t";if(off)localStorage.removeItem("skipgc");else localStorage.setItem("skipgc","t");
+    gcMsg=off?"Visit tracking is back ON for this browser.":"Visit tracking is now OFF for this browser, so your own visits won't be counted. Open this page with #stu-notrack again to turn it back on.";}}catch(e){}
+  const skipMe=(()=>{try{return localStorage.getItem("skipgc")==="t";}catch(e){return false;}})();
+  const track=(()=>{if(!GOATCOUNTER||skipMe)return()=>{};const q=[],sent=new Set();
     const flush=()=>{const gc=window.goatcounter;if(!gc||!gc.count)return;while(q.length){try{gc.count(q.shift());}catch(e){}}};
     if(!window.goatcounter||!window.goatcounter.count){window.goatcounter=Object.assign(window.goatcounter||{},{no_onload:true});
       const s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://"+GOATCOUNTER+".goatcounter.com/count");s.onload=flush;document.head.appendChild(s);}
@@ -147,5 +151,6 @@
   grid.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40){month.setMonth(month.getMonth()+(dx>0?-1:1));render();}sx=null;},{passive:true});
   render();
   track("opened","Calendar opened",true);
+  if(gcMsg){const m=document.createElement("div");m.textContent=gcMsg;m.style.cssText="margin:0 auto 12px;max-width:720px;padding:10px 14px;border-radius:8px;background:#2F5D4E;color:#fff;font:600 14px/1.4 Manrope,system-ui,sans-serif;text-align:center";host.insertBefore(m,host.firstChild);}
 })();
 
