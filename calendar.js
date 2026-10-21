@@ -84,7 +84,7 @@
           "Wedding date":full(d), "Package":plabel(p,r), "Price quoted":gbp(r.final)+(r.seas?" (incl. "+gbp(r.off)+" seasonal discount)":""),
           "First name":v.first.trim(),"Last name":v.last.trim(),"Partner":v.partner.trim(),"Venue":v.venue.trim(),"Email":v.email.trim(),"Mobile":v.mobile.trim(),"What they would like to do":intents.join(" / "),"Message":v.message.trim()})});
         if(!res.ok)throw new Error(res.status);
-        panel.innerHTML='<div class="bc-step">Enquiry sent</div><p class="bc-date">Thank you, '+esc(v.first.trim())+'!</p><p class="bc-muted">Your enquiry for <b>'+full(d)+'</b> ('+p.name+') is with me. I\'ll be in touch personally by email, and I\'ll drop you a WhatsApp too so you know it\'s on its way. Do keep an eye on your junk folder just in case.</p>';
+        panel.innerHTML='<div class="bc-step">Enquiry sent</div><p class="bc-date">Thank you, '+esc(v.first.trim())+'!</p><p class="bc-muted">Your enquiry for <b>'+full(d)+'</b> ('+p.name+') is with me. I\'ll be in touch personally by email, and I\'ll drop you a WhatsApp and text too so you know it\'s on its way. Do keep an eye on your junk folder just in case.</p>';
       }catch(x){btn.disabled=false;btn.textContent="Send enquiry";err.textContent="Sorry, that didn't send. Please try again, or email hello@stutuckerphotography.co.uk.";err.hidden=false;}
     };
     fm.querySelector("input").focus();
