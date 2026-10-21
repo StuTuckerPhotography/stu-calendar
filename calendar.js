@@ -137,7 +137,7 @@
     fm.querySelector("input").focus();
     if(panel.scrollIntoView)panel.scrollIntoView({behavior:"smooth",block:"start"});
   }
-  function intro(){sel=null;render();panel.innerHTML='<div class="bc-step">Step 1 of 3 · Choose a date</div><p class="bc-muted">Pick an available date to see its packages and prices.</p><p class="bc-muted" style="margin-top:10px">No date yet? <button type="button" class="bc-link" id="bcNoDate2">Tell me roughly when</button></p>';document.getElementById("bcNoDate2").onclick=nodate;}
+  function intro(){sel=null;render();{const nb=document.getElementById("bcNoDate");if(nb)nb.setAttribute("aria-expanded","false");}panel.innerHTML='<div class="bc-step">Step 1 of 3 · Choose a date</div><p class="bc-muted">Pick an available date to see its packages and prices.</p><p class="bc-muted" style="margin-top:10px">No date yet? <button type="button" class="bc-link" id="bcNoDate2">Tell me roughly when</button></p>';document.getElementById("bcNoDate2").onclick=nodate;}
   let month=new Date(today.getFullYear(),today.getMonth(),1), sel=null;
   const grid=document.getElementById("bcGrid"), panel=document.getElementById("bcPanel");
   document.getElementById("bcDow").innerHTML=["M","T","W","T","F","S","S"].map(d=>'<div class="bc-dow">'+d+'</div>').join("");
@@ -186,7 +186,7 @@
   let sx=null;grid.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;},{passive:true});
   grid.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40){month.setMonth(month.getMonth()+(dx>0?-1:1));render();}sx=null;},{passive:true});
   render();intro();
-  document.getElementById("bcNoDate").onclick=nodate;
+  {const nb=document.getElementById("bcNoDate");nb.setAttribute("aria-expanded","false");nb.onclick=()=>{const open=!!document.getElementById("bcNdForm");if(open)intro();else nodate();nb.setAttribute("aria-expanded",String(!open));};}
   track("opened","Calendar opened",true);
   const host=document.getElementById("stu-calendar")||document.body;
   const gcShow=t=>{let m=document.getElementById("stu-gc-msg");if(!m){m=document.createElement("div");m.id="stu-gc-msg";m.style.cssText="margin:0 auto 12px;max-width:720px;padding:10px 14px;border-radius:8px;background:#2F5D4E;color:#fff;font:600 14px/1.4 Manrope,system-ui,sans-serif;text-align:center";host.insertBefore(m,host.firstChild);}m.textContent=t;};
