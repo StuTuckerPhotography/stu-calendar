@@ -37,6 +37,14 @@
   const pad=n=>String(n).padStart(2,"0");
   const key=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
   const today=(()=>{const d=new Date();d.setHours(0,0,0,0);return d;})();
+  // ---------- Anonymous activity tracking (GoatCounter, no cookies, no personal details) ----------
+  // Put your GoatCounter code here (the bit before .goatcounter.com). Leave empty to switch tracking off.
+  const GOATCOUNTER="stutucker";
+  const track=(()=>{if(!GOATCOUNTER)return()=>{};const q=[],sent=new Set();
+    const flush=()=>{const gc=window.goatcounter;if(!gc||!gc.count)return;while(q.length){try{gc.count(q.shift());}catch(e){}}};
+    if(!window.goatcounter||!window.goatcounter.count){window.goatcounter=Object.assign(window.goatcounter||{},{no_onload:true});
+      const s=document.createElement("script");s.async=true;s.src="https://gc.zgo.at/count.js";s.setAttribute("data-goatcounter","https://"+GOATCOUNTER+".goatcounter.com/count");s.onload=flush;document.head.appendChild(s);}
+    return(path,title,once)=>{if(once){if(sent.has(path))return;sent.add(path);}q.push({path:"cal/"+path,title:title||path,event:true});flush();};})();
   const isMid=d=>{const w=d.getDay();return w>=1&&w<=4;};
   const ord=n=>{const s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0]);};
   const full=d=>d.toLocaleDateString("en-GB",{weekday:"long"})+" "+ord(d.getDate())+" "+d.toLocaleDateString("en-GB",{month:"long"})+" "+d.getFullYear();
@@ -70,7 +78,7 @@
     document.getElementById("bcChange").onclick=()=>pick(d);
     document.getElementById("bcBack2").onclick=()=>detail(d,p,r.h);
     const fm=document.getElementById("bcForm"), err=document.getElementById("bcErr"), btn=document.getElementById("bcSend");
-    fm.addEventListener("input",e=>e.target.classList.remove("bad"));
+    fm.addEventListener("input",e=>{e.target.classList.remove("bad");track("form/typing","Started filling in the form",true);});
     fm.onsubmit=async e=>{e.preventDefault();
       const v=Object.fromEntries(new FormData(fm).entries()); let first=null;
       fm.querySelectorAll("[required]").forEach(el=>{const bad=!el.value.trim()||(el.type==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()));el.classList.toggle("bad",bad);if(bad&&!first)first=el;});
@@ -84,6 +92,7 @@
           "Wedding date":full(d), "Package":plabel(p,r), "Price quoted":gbp(r.final)+(r.seas?" (incl. "+gbp(r.off)+" seasonal discount)":""),
           "First name":v.first.trim(),"Last name":v.last.trim(),"Partner":v.partner.trim(),"Venue":v.venue.trim(),"Email":v.email.trim(),"Mobile":v.mobile.trim(),"What they would like to do":intents.join(" / "),"Message":v.message.trim()})});
         if(!res.ok)throw new Error(res.status);
+        track("form/sent","Enquiry sent",true);
         panel.innerHTML='<div class="bc-step">Enquiry sent</div><p class="bc-date">Thank you, '+esc(v.first.trim())+'!</p><p class="bc-muted">Your enquiry for <b>'+full(d)+'</b> ('+p.name+') is with me. I\'ll be in touch personally by email, and I\'ll drop you a WhatsApp and text too so you know it\'s on its way. Do keep an eye on your junk folder just in case.</p>';
       }catch(x){btn.disabled=false;btn.textContent="Send enquiry";err.textContent="Sorry, that didn't send. Please try again, or email hello@stutuckerphotography.co.uk.";err.hidden=false;}
     };
@@ -112,13 +121,13 @@
       if(k===key(today))c+=" today"; if(k===sel)c+=" sel";
       h+=(a?'<button type="button"':'<div')+' class="'+c+'" title="'+t.replace(/"/g,"&quot;")+'" aria-label="'+full(dt)+", "+t.replace(/"/g,"&quot;")+'"'+a+'>'+d+(a?'</button>':'</div>');}
     grid.innerHTML=h;
-    grid.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{sel=b.dataset.k;render();const dt=new Date(sel+"T00:00:00");pick(dt);});
+    grid.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{sel=b.dataset.k;render();const dt=new Date(sel+"T00:00:00");track("date/"+sel,"Date checked: "+full(dt),true);pick(dt);});
   }
   function pick(d){
     const cards=PACKAGES.map((p,i)=>{const r=price(p,d),blocked=p.name==="ELOPE"&&elopePeak(d);
       return '<button type="button" class="bc-pkg" data-i="'+i+'"'+(blocked?" disabled":"")+'>'+(p.popular?'<span class="badge">MOST POPULAR</span>':"")+'<b>'+p.name+'</b><span class="p">'+(r.seas?'<s style="opacity:.55;font-weight:400">'+gbp(r.base)+'</s> ':"")+(p.hourly?"from ":"")+gbp(r.final)+'</span><span class="n">'+(p.hourly?r.min+"\u2013"+HOURLY.max+" hours":p.hours)+'</span>'+(r.mid?'<span class="g">midweek rate</span>':"")+(r.seas?'<span class="g">'+gbp(r.off)+' seasonal discount</span>':"")+(blocked?'<span class="w">not available for this date</span>':"")+'</button>';}).join("");
     panel.innerHTML='<div class="bc-step">Step 2 of 3 \u00b7 Choose a package</div><p class="bc-date">'+full(d)+(isMid(d)?" \u00b7 midweek":"")+'</p><div class="bc-pkgs">'+cards+'</div>';
-    panel.querySelectorAll(".bc-pkg:not([disabled])").forEach(b=>b.onclick=()=>detail(d,PACKAGES[+b.dataset.i]));
+    panel.querySelectorAll(".bc-pkg:not([disabled])").forEach(b=>b.onclick=()=>{const pk=PACKAGES[+b.dataset.i];track("package/"+pk.name.toLowerCase().replace(/[^a-z0-9]+/g,"-"),"Package viewed: "+pk.name,true);detail(d,pk);});
   }
   function detail(d,p,h){
     const r=price(p,d,h);
@@ -129,7 +138,7 @@
       '<div class="bc-actions"><button type="button" class="bc-btn" id="bcBack">Back</button><button type="button" class="bc-btn primary" id="bcGo">Enquire about this date</button></div>';
     document.getElementById("bcBack").onclick=()=>pick(d);
     if(r.hourly){const mi=document.getElementById("bcMinus"),pl=document.getElementById("bcPlus");mi.disabled=r.h<=r.min;pl.disabled=r.h>=HOURLY.max;mi.onclick=()=>detail(d,p,r.h-1);pl.onclick=()=>detail(d,p,r.h+1);}
-    document.getElementById("bcGo").onclick=()=>form(d,p,r);
+    document.getElementById("bcGo").onclick=()=>{track("form/started","Enquiry form opened",true);form(d,p,r);};
   }
   document.getElementById("bcPrev").onclick=()=>{month.setMonth(month.getMonth()-1);render();};
   document.getElementById("bcNext").onclick=()=>{month.setMonth(month.getMonth()+1);render();};
@@ -137,5 +146,6 @@
   let sx=null;grid.addEventListener("touchstart",e=>{sx=e.touches[0].clientX;},{passive:true});
   grid.addEventListener("touchend",e=>{if(sx===null)return;const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>40){month.setMonth(month.getMonth()+(dx>0?-1:1));render();}sx=null;},{passive:true});
   render();
+  track("opened","Calendar opened",true);
 })();
 
