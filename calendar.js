@@ -1,6 +1,8 @@
 /* Stu Tucker Photography - wedding date calendar.
    Loaded on the website by:  <div id="stu-calendar"></div><script src="https://stutuckerphotography.github.io/stu-calendar/calendar.js"></script>
-   Edit this file (dates, prices, rules) and the website updates automatically. */
+   Edit this file (dates, prices, rules) and the website updates automatically.
+   KEEP IN SYNC: Stu's CRM shows this same calendar. After ANY change here, run
+   python3 tools/sync_crm_calendar.py <crm index.html> and republish the CRM, so both always look and work the same. */
 (function(){
   var host=document.getElementById("stu-calendar");
   if(!host){host=document.createElement("div");host.id="stu-calendar";var s=document.currentScript;if(s&&s.parentNode)s.parentNode.insertBefore(host,s);else document.body.appendChild(host);}
