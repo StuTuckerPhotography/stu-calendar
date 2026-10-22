@@ -3,7 +3,10 @@
    Edit this file (dates, prices, rules) and the website updates automatically.
    KEEP IN SYNC: Stu's CRM shows this same calendar. After ANY change here, run
    python3 tools/sync_crm_calendar.py <crm index.html> and republish the CRM, so both always look and work the same. */
+// ON/OFF SWITCH: false = the calendar shows nothing anywhere it's embedded (the code, dates and CRM copy are untouched). Set to true to switch it back on.
+var STU_CALENDAR_ON=false;
 (function(){
+  if(!STU_CALENDAR_ON){var h0=document.getElementById("stu-calendar");if(h0)h0.innerHTML="";return;}
   var host=document.getElementById("stu-calendar");
   if(!host){host=document.createElement("div");host.id="stu-calendar";var s=document.currentScript;if(s&&s.parentNode)s.parentNode.insertBefore(host,s);else document.body.appendChild(host);}
   if(host.getAttribute("data-ready"))return; host.setAttribute("data-ready","1");
