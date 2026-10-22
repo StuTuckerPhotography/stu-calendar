@@ -156,7 +156,7 @@
     for(let d=1;d<=n;d++){const dt=new Date(y,m,d),k=key(dt);let c="bc-day",t="",a="";
       if(dt<today)c+=" past";
       else if(BOOKED.has(k)||famBlocked(k,dt)){c+=" booked";t="Booked";a=' data-b="'+k+'"';}
-      else if(closed(dt)||HOLIDAYS.has(k)){c+=" hol";t="Closed";}
+      else if(closed(dt)||HOLIDAYS.has(k)||k===key(today)){c+=" hol";t="Closed";} // today can't be booked, so it shows as closed
       else{c+=" avail";a=' data-k="'+k+'"';t="Available";}
       if(k===key(today))c+=" today"; if(k===sel)c+=" sel";
       h+=(a?'<button type="button"':'<div')+' class="'+c+'" title="'+t.replace(/"/g,"&quot;")+'" aria-label="'+full(dt)+", "+t.replace(/"/g,"&quot;")+'"'+a+'>'+d+(a?'</button>':'</div>');}
