@@ -57,7 +57,9 @@
   // Bespoke by the hour: price for each number of hours. Capped at 8 so it never undercuts Essentials (10 hrs) or Nostalgia (12 hrs).
   // Elope is not available on Fridays and Saturdays in peak season (April to October).
   const PEAK_MONTHS=[3,4,5,6,7,8,9];
-  const elopePeak=d=>PEAK_MONTHS.includes(d.getMonth())&&(d.getDay()===5||d.getDay()===6);
+  // ...until two months before the date: then, if it's still free, Elope can be booked.
+  const elopeOpens=d=>{const t=new Date(d.getFullYear(),d.getMonth()-2,1);t.setDate(Math.min(d.getDate(),new Date(t.getFullYear(),t.getMonth()+1,0).getDate()));return t;};
+  const elopePeak=d=>PEAK_MONTHS.includes(d.getMonth())&&(d.getDay()===5||d.getDay()===6)&&today<elopeOpens(d);
   const HOURLY={prices:{2:650,3:940,4:1225,5:1515,6:1800,7:1900,8:2000},firstHrs:2,max:8,weekendMin:6};
   const isWknd=d=>{const w=d.getDay();return w===0||w===5||w===6;};   // Fri, Sat, Sun
   function price(p,d,h){if(!p.hourly)return basePrice(p,d);const min=isWknd(d)?HOURLY.weekendMin:HOURLY.firstHrs;h=Math.min(HOURLY.max,Math.max(min,h||min));const f=HOURLY.prices[h];return{base:f,final:f,seas:false,off:0,mid:false,hourly:true,h,min};}
@@ -173,8 +175,9 @@
   }
   function pick(d){
     const cards=PACKAGES.map((p,i)=>{const r=price(p,d),blocked=p.name==="ELOPE"&&elopePeak(d);
-      return '<button type="button" class="bc-pkg" data-i="'+i+'"'+(blocked?" disabled":"")+'>'+(p.popular?'<span class="badge">MOST POPULAR</span>':"")+'<b>'+p.name+'</b><span class="p">'+(r.seas?'<s style="opacity:.55;font-weight:400">'+gbp(r.base)+'</s> ':"")+(p.hourly?"from ":"")+gbp(r.final)+'</span><span class="n">'+(p.hourly?r.min+"\u2013"+HOURLY.max+" hours":p.hours)+'</span>'+(r.mid?'<span class="g">midweek rate</span>':"")+(r.seas?'<span class="g">'+gbp(r.off)+' seasonal discount</span>':"")+(blocked?'<span class="w">not available for this date</span>':"")+'</button>';}).join("");
-    panel.innerHTML='<p class="bc-yes" role="status">I\u2019m available on your date \ud83e\udd73</p><div class="bc-step">Step 2 of 3 \u00b7 Choose a package</div><p class="bc-date">'+full(d)+(isMid(d)?" \u00b7 midweek":"")+'</p><div class="bc-pkgs">'+cards+'</div>';
+      return '<button type="button" class="bc-pkg" data-i="'+i+'"'+(blocked?" disabled":"")+'>'+(p.popular?'<span class="badge">MOST POPULAR</span>':"")+'<b>'+p.name+'</b><span class="p">'+(r.seas?'<s style="opacity:.55;font-weight:400">'+gbp(r.base)+'</s> ':"")+(p.hourly?"from ":"")+gbp(r.final)+'</span><span class="n">'+(p.hourly?r.min+"\u2013"+HOURLY.max+" hours":p.hours)+'</span>'+(r.mid?'<span class="g">midweek rate</span>':"")+(r.seas?'<span class="g">'+gbp(r.off)+' seasonal discount</span>':"")+(blocked?'<span class="w">opens '+elopeOpens(d).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})+'</span>':"")+'</button>';}).join("");
+    const eNote=PACKAGES.some(p=>p.name==="ELOPE")&&elopePeak(d)?'<div class="bc-next"><b>Elope opens for this date on '+full(elopeOpens(d))+'.</b><br>Fridays and Saturdays from April to October are kept for full-day weddings until two months before. If the date\u2019s still free then, it\u2019s yours to book as an Elope. Fancy it sooner? Sundays and midweek dates are open for Elope now.</div>':"";
+    panel.innerHTML='<p class="bc-yes" role="status">I\u2019m available on your date \ud83e\udd73</p><div class="bc-step">Step 2 of 3 \u00b7 Choose a package</div><p class="bc-date">'+full(d)+(isMid(d)?" \u00b7 midweek":"")+'</p><div class="bc-pkgs">'+cards+'</div>'+eNote;
     panel.querySelectorAll(".bc-pkg:not([disabled])").forEach(b=>b.onclick=()=>{const pk=PACKAGES[+b.dataset.i];track("package/"+pk.name.toLowerCase().replace(/[^a-z0-9]+/g,"-"),"Package viewed: "+pk.name,true);detail(d,pk);});
   }
   function detail(d,p,h){
