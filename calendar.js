@@ -165,7 +165,7 @@
     grid.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{sel=b.dataset.k;render();const dt=new Date(sel+"T00:00:00");track("date/"+sel,"Date checked: "+full(dt),true);pick(dt);});
   }
   function taken(d){
-    panel.innerHTML='<p class="bc-no" role="status">Sorry guys, I\u2019m already spoken for on this date</p><p class="bc-date">'+full(d)+'</p><p class="bc-muted">Pick another available date, or if your date is flexible, tell me roughly when you\u2019re thinking.</p><div class="bc-actions"><button type="button" class="bc-btn" id="bcTakenBack">Choose another date</button><button type="button" class="bc-btn primary" id="bcTakenNd">Tell me roughly when</button></div>';
+    panel.innerHTML='<p class="bc-no" role="status">Sorry guys, I\u2019m already spoken for on this date</p><p class="bc-date">'+full(d)+'</p><p class="bc-muted">Got another date in mind? Or if your date is flexible, tell me roughly when you\u2019re thinking.</p><div class="bc-actions"><button type="button" class="bc-btn" id="bcTakenBack">Choose another date</button><button type="button" class="bc-btn primary" id="bcTakenNd">Tell me roughly when</button></div>';
     document.getElementById("bcTakenBack").onclick=()=>{intro();const g=document.getElementById("bcGrid");if(g&&g.scrollIntoView)g.scrollIntoView({behavior:"smooth",block:"center"});};
     document.getElementById("bcTakenNd").onclick=()=>{nodate();const nb=document.getElementById("bcNoDate");if(nb)nb.setAttribute("aria-expanded","true");};
     if(window.matchMedia&&window.matchMedia("(max-width:820px)").matches&&panel.scrollIntoView)panel.scrollIntoView({behavior:"smooth",block:"start"});
