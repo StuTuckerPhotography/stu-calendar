@@ -114,7 +114,6 @@
     const pn=n=>({"HYBRID PHOTOGRAPHY & VIDEOGRAPHY":"Hybrid photo & video","BESPOKE BY THE HOUR WEDDING PHOTOGRAPHY":"Bespoke, by the hour"})[n]||(n.charAt(0)+n.slice(1).toLowerCase());
     const from=PACKAGES.map(p=>'<div><span>'+pn(p.name)+'</span><b>from '+gbp(fromPrice(p))+'</b></div>').join("");
     panel.innerHTML='<div class="bc-step">No date booked yet</div><p class="bc-date bc-nd-title">Tell me roughly when</p><p class="bc-muted bc-nd-lede">No problem at all. Let me know roughly when you\'re thinking and I\'ll come back to you with the dates I have free and the prices for them.</p>'+
-      '<div class="bc-from">'+from+'<p>Exact prices depend on the day: midweek dates and November to February weddings cost less.</p></div>'+
       '<form id="bcNdForm" novalidate><div class="bc-fields">'+F.map(([n,l,t,a])=>'<label class="bc-f'+(n==="partner"||n==="email"||n==="mobile"?" w":"")+'"><span>'+l+' *</span><input name="'+n+'" type="'+t+'"'+(a?' autocomplete="'+a+'"':"")+' required></label>').join("")+
       '<label class="bc-f w"><span>Roughly when? *</span><input name="when" type="text" placeholder="e.g. Summer 2027" required></label>'+
       '<fieldset class="bc-f w bc-int" id="bcNdDays"><legend>Which day of the week are you thinking?</legend><div class="bc-days">'+["Midweek","Friday","Saturday","Sunday"].map(d=>'<label class="bc-chk"><input type="checkbox" name="days" value="'+d+'"> '+d+'</label>').join("")+'</div></fieldset>'+
