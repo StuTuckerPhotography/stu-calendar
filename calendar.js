@@ -86,7 +86,7 @@
     document.getElementById("bcChange").onclick=()=>pick(d);
     document.getElementById("bcBack2").onclick=()=>detail(d,p,r.h);
     const fm=document.getElementById("bcForm"), err=document.getElementById("bcErr"), btn=document.getElementById("bcSend");
-    fm.addEventListener("input",e=>{e.target.classList.remove("bad");track("form/typing","Started filling in the form",true);});
+    fm.addEventListener("input",e=>{e.target.classList.remove("bad");track("form/typing","Started filling in the form",true);const nm=e.target.name;if(nm&&nm!=="_gotcha")track("form/field/"+nm,"Form box filled: "+nm,true);});  // records which box was used, never what was typed
     fm.onsubmit=async e=>{e.preventDefault();
       const v=Object.fromEntries(new FormData(fm).entries()); let first=null;
       fm.querySelectorAll("[required]").forEach(el=>{const bad=!el.value.trim()||(el.type==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()));el.classList.toggle("bad",bad);if(bad&&!first)first=el;});
@@ -125,7 +125,7 @@
       '<p class="bc-err" id="bcNdErr" role="alert" hidden></p><div class="bc-actions"><button type="button" class="bc-btn" id="bcNdBack">Back</button><button type="submit" class="bc-btn primary" id="bcNdSend">Send enquiry</button></div></form>';
     document.getElementById("bcNdBack").onclick=intro;
     const fm=document.getElementById("bcNdForm"),err=document.getElementById("bcNdErr"),btn=document.getElementById("bcNdSend");
-    fm.addEventListener("input",e=>{e.target.classList.remove("bad");track("form/nodate-typing","No date yet form: started typing",true);});
+    fm.addEventListener("input",e=>{e.target.classList.remove("bad");track("form/nodate-typing","No date yet form: started typing",true);const nm=e.target.name;if(nm&&nm!=="_gotcha")track("form/nodate-field/"+nm,"No date form box filled: "+nm,true);});  // records which box was used, never what was typed
     fm.onsubmit=async e=>{e.preventDefault();const v=Object.fromEntries(new FormData(fm).entries());let first=null;
       fm.querySelectorAll("[required]").forEach(el=>{const bad=!el.value.trim()||(el.type==="email"&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el.value.trim()));el.classList.toggle("bad",bad);if(bad&&!first)first=el;});
       if(first){err.textContent="Please fill in the highlighted fields.";err.hidden=false;first.focus();return;}
