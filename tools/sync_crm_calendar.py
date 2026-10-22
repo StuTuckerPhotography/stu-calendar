@@ -14,7 +14,7 @@ The only differences the CRM keeps on purpose:
   * the main enquiry form shows a preview of the email instead of sending it
   * no GoatCounter visit counting
   * no jump to the website's thank-you page after sending
-  * always shows availability, whatever the website's SHOW_DATES switch says
+  * always in use, whatever the website's CALENDAR_IN_USE switch says
 """
 import json, re, sys, pathlib
 
@@ -62,9 +62,9 @@ bk = re.search(r"\n  const BOOKED=new Set\(\[[^\n]*", logic)
 if not bk: sys.exit("sync stopped: BOOKED line not found")
 logic = logic.replace(bk.group(0), '\n  const BOOKED=new Set((window.BV_CAL||[]).map(([d])=>d.slice(0,4)+"-"+d.slice(4,6)+"-"+d.slice(6,8)));  // the CRM\'s own bookings list')
 
-sd = re.search(r'const SHOW_DATES=(true|false);', logic)
-if not sd: sys.exit("sync stopped: SHOW_DATES line not found")
-logic = logic.replace(sd.group(0), 'const SHOW_DATES=true;  /* the CRM always shows your availability */', 1)
+sd = re.search(r'const CALENDAR_IN_USE=(true|false);', logic)
+if not sd: sys.exit("sync stopped: CALENDAR_IN_USE line not found")
+logic = logic.replace(sd.group(0), 'const CALENDAR_IN_USE=true;  /* the CRM calendar is always in use, whatever the website switch says */', 1)
 
 th = re.search(r'const THANKYOU="[^"]*"', logic)
 if not th: sys.exit("sync stopped: THANKYOU line not found")
