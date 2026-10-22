@@ -14,7 +14,7 @@ The only differences the CRM keeps on purpose:
   * the main enquiry form shows a preview of the email instead of sending it
   * no GoatCounter visit counting
   * no jump to the website's thank-you page after sending
-  * always in use, whatever the website's CALENDAR_IN_USE switch says
+  * the in-use switch is set live from the CRM's Website calendar switches panel
 """
 import json, re, sys, pathlib
 
@@ -64,7 +64,7 @@ logic = logic.replace(bk.group(0), '\n  const BOOKED=new Set((window.BV_CAL||[])
 
 sd = re.search(r'const CALENDAR_IN_USE=(true|false);', logic)
 if not sd: sys.exit("sync stopped: CALENDAR_IN_USE line not found")
-logic = logic.replace(sd.group(0), 'const CALENDAR_IN_USE=true;  /* the CRM calendar is always in use, whatever the website switch says */', 1)
+logic = logic.replace(sd.group(0), 'let CALENDAR_IN_USE=true;  /* the CRM mirrors the website: the switches panel calls BV_setInUse */\n  window.BV_setInUse=v=>{v=!!v;if(v===CALENDAR_IN_USE)return;CALENDAR_IN_USE=v;intro();};', 1)
 
 th = re.search(r'const THANKYOU="[^"]*"', logic)
 if not th: sys.exit("sync stopped: THANKYOU line not found")

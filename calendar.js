@@ -176,7 +176,7 @@ var STU_CALENDAR_ON=false;
       h+=(a?'<button type="button"':'<div')+' class="'+c+'" title="'+t.replace(/"/g,"&quot;")+'" aria-label="'+full(dt)+", "+t.replace(/"/g,"&quot;")+'"'+a+'>'+d+(a?'</button>':'</div>');}
     grid.innerHTML=h;
     root.querySelectorAll(".bc-legend,.bc-banner,.bc-nodate,.bc-tap").forEach(x=>x.style.display=CALENDAR_IN_USE?"":"none");   // nothing that shows availability or lets anyone enquire
-    if(!CALENDAR_IN_USE){const ld=document.querySelector("#stu-calendar .lede");if(ld)ld.textContent="This calendar isn\u2019t in use at the moment.";}
+    {const ld=document.querySelector("#stu-calendar .lede");if(ld){if(!ld.dataset.orig)ld.dataset.orig=ld.textContent;ld.textContent=CALENDAR_IN_USE?ld.dataset.orig:"This calendar isn\u2019t in use at the moment.";}}
     grid.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{sel=b.dataset.c;render();const dt=new Date(sel+"T00:00:00");track("date/"+sel,"Date checked: "+full(dt)+" (closed)",true);taken(dt,true);});
     grid.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{sel=b.dataset.b;render();const dt=new Date(sel+"T00:00:00");track("date/"+sel,"Date checked: "+full(dt)+" (booked)",true);taken(dt);});
     grid.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{sel=b.dataset.k;render();const dt=new Date(sel+"T00:00:00");track("date/"+sel,"Date checked: "+full(dt),true);pick(dt);});
