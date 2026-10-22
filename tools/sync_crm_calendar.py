@@ -13,6 +13,7 @@ The only differences the CRM keeps on purpose:
   * ticks in the Half term / Holidays tabs close dates straight away (window.BV_closures)
   * the main enquiry form shows a preview of the email instead of sending it
   * no GoatCounter visit counting
+  * no jump to the website's thank-you page after sending
 """
 import json, re, sys, pathlib
 
@@ -59,6 +60,10 @@ logic = logic.replace(hol.group(0), """
 bk = re.search(r"\n  const BOOKED=new Set\(\[[^\n]*", logic)
 if not bk: sys.exit("sync stopped: BOOKED line not found")
 logic = logic.replace(bk.group(0), '\n  const BOOKED=new Set((window.BV_CAL||[]).map(([d])=>d.slice(0,4)+"-"+d.slice(4,6)+"-"+d.slice(6,8)));  // the CRM\'s own bookings list')
+
+th = re.search(r'const THANKYOU="[^"]*"', logic)
+if not th: sys.exit("sync stopped: THANKYOU line not found")
+logic = logic.replace(th.group(0), 'const THANKYOU=""  /* the CRM never leaves the page after sending */', 1)
 
 a = one(logic, "  // ---------- Anonymous activity tracking", "tracking start")
 b = logic.index("\n", logic.index("return(path,title,once)", a))

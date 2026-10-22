@@ -74,6 +74,9 @@
   const FORMPKG={"NOSTALGIA":"Nostalgia - 12 Hours","ESSENTIALS":"Essentials - 10 Hours","LOW KEY":"Low Key - 8 Hours","MINI LUXE":"Mini Luxe - 6 Hours","HYBRID PHOTOGRAPHY & VIDEOGRAPHY":"Hybrid Photography & Videography - 10 Hours","ELOPE":"Elope - Up to 2 Hours"};
   const dmy=d=>pad(d.getDate())+"/"+pad(d.getMonth()+1)+"/"+d.getFullYear();
   const FORMSPREE="https://formspree.io/f/xkjgvpvd";
+  // After the thank-you message shows, couples are taken to this page (leave empty to stay on the calendar).
+  const THANKYOU="https://www.stutuckerphotography.com/Thankyou/", THANKYOU_DELAY=4000;
+  const goThanks=()=>{if(THANKYOU)setTimeout(()=>{location.href=THANKYOU;},THANKYOU_DELAY);};
   const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
   function form(d,p,r){
     const F=[["first","First name","text","given-name"],["last","Last name","text","family-name"],["partner","Partner's full name","text",""],["venue","Wedding venue","text",""],["email","Email","email","email"],["mobile","Mobile number","tel","tel"]];
@@ -102,6 +105,7 @@
         if(!res.ok)throw new Error(res.status);
         track("form/sent","Enquiry sent",true);
         panel.innerHTML='<div class="bc-step">Enquiry sent</div><p class="bc-date">Thank you, '+esc(v.first.trim())+'!</p><p class="bc-muted">Your enquiry for <b>'+full(d)+'</b> ('+p.name+') is with me. I\'ll be in touch personally by email, and I\'ll drop you a WhatsApp and text too so you know it\'s on its way. Do keep an eye on your junk folder just in case.</p>';
+        goThanks();
       }catch(x){btn.disabled=false;btn.textContent="Send enquiry";err.textContent="Sorry, that didn't send. Please try again, or email hello@stutuckerphotography.co.uk.";err.hidden=false;}
     };
     fm.querySelector("input").focus();
@@ -136,6 +140,7 @@
           "First name":v.first.trim(),"Last name":v.last.trim(),"Partner":v.partner.trim(),"Venue":(v.venue||"").trim()||"Not given","Email":v.email.trim(),"Mobile":v.mobile.trim(),"Message":(v.message||"").trim()})});
         if(!res.ok)throw new Error(res.status);track("form/nodate-sent","No date yet enquiry sent",true);
         panel.innerHTML='<div class="bc-step">Enquiry sent</div><p class="bc-date">Thank you, '+esc(v.first.trim())+'!</p><p class="bc-muted">I\'ll be in touch personally by email with the dates I have free around <b>'+esc(v.when.trim())+'</b>, and I\'ll drop you a WhatsApp and text too so you know it\'s on its way. Do keep an eye on your junk folder just in case.</p>';
+        goThanks();
       }catch(x){btn.disabled=false;btn.textContent="Send enquiry";err.textContent="Sorry, that didn't send. Please try again, or email hello@stutuckerphotography.co.uk.";err.hidden=false;}};
     fm.querySelector("input").focus();
     if(panel.scrollIntoView)panel.scrollIntoView({behavior:"smooth",block:"start"});
