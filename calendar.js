@@ -19,7 +19,7 @@ var STU_CALENDAR_ON=false;
   const root=document.getElementById("bc"); if(!root) return;
   // "Dates left" banner. YEAR_LIMITS = full days Stu will take that year; YEAR_BOOKED = weddings booked so far (Claude updates this with every new booking).
   const YEAR_LIMITS={2027:53};
-  const YEAR_BOOKED={2027:44};
+  const YEAR_BOOKED={2027:43};
   (()=>{const y=Object.keys(YEAR_LIMITS).map(Number).filter(v=>v>=new Date().getFullYear()).sort()[0]; if(!y) return;
     const left=Math.max(0,YEAR_LIMITS[y]-(YEAR_BOOKED[y]||0)), bk=YEAR_BOOKED[y]||0, el=document.createElement("div"); el.className="bc-banner"; el.setAttribute("role","status");
     el.innerHTML=left>0?'<b>Love my work? Just '+left+' full-day date'+(left===1?'':'s')+' left for '+y+'</b><span>'+bk+' couples have already said yes for '+y+'</span><button type="button" class="bc-jump" data-y="'+y+'">See '+y+' dates &rarr;</button>':'<b>My '+y+' full-day dates are now all booked</b><span>I\'d love to hear about your '+(y+1)+' plans</span><button type="button" class="bc-jump" data-y="'+(y+1)+'">See '+(y+1)+' dates &rarr;</button>';
