@@ -3,7 +3,7 @@
    Edit this file (dates, prices, rules) and the website updates automatically.
    KEEP IN SYNC: Stu's CRM shows this same calendar. After ANY change here, run
    python3 tools/sync_crm_calendar.py <crm index.html> and republish the CRM, so both always look and work the same.
-   availability.js (the view-only calendar) reads BOOKED, CLOSED, SCHOOL_CLOSED, OWN_CLOSED, FAMILY and FAMILY_BLOCK_DAYS from this file, so keep those names and their one-line format. */
+   availability.js (the view-only calendar) reads BOOKED, ELOPE_ONE, CLOSED, SCHOOL_CLOSED, OWN_CLOSED, FAMILY and FAMILY_BLOCK_DAYS from this file, so keep those names and their one-line format. */
 // ON/OFF SWITCH: false = the calendar shows nothing anywhere it's embedded (the code, dates and CRM copy are untouched). Set to true to switch it back on.
 var STU_CALENDAR_ON=false;
 (function(){
@@ -41,6 +41,9 @@ var STU_CALENDAR_ON=false;
   const HOLIDAYS=new Set([...SCHOOL_CLOSED,...OWN_CLOSED]);                                  // add "YYYY-MM-DD" dates you're away
   // Booked dates come from the dashboard's own bookings list.
   const BOOKED=new Set(["2026-10-25", "2026-10-29", "2026-10-31", "2026-11-07", "2026-11-12", "2026-11-21", "2026-12-02", "2026-12-03", "2026-12-18", "2026-12-20", "2026-12-28", "2026-12-29", "2026-12-30", "2027-01-05", "2027-02-26", "2027-03-05", "2027-03-14", "2027-03-25", "2027-03-27", "2027-03-28", "2027-04-01", "2027-04-24", "2027-04-25", "2027-05-01", "2027-05-04", "2027-05-09", "2027-05-22", "2027-05-26", "2027-05-27", "2027-05-28", "2027-05-29", "2027-05-31", "2027-06-01", "2027-06-05", "2027-06-12", "2027-06-17", "2027-06-18", "2027-06-21", "2027-06-26", "2027-07-01", "2027-07-07", "2027-07-15", "2027-07-16", "2027-07-17", "2027-07-22", "2027-07-23", "2027-07-24", "2027-07-29", "2027-07-31", "2027-08-27", "2027-08-28", "2027-09-01", "2027-09-04", "2027-09-09", "2027-09-10", "2027-09-17", "2027-09-24", "2027-09-25", "2027-10-01", "2027-10-09", "2027-10-14", "2027-11-06", "2027-11-11", "2028-03-18", "2028-03-25", "2028-04-22", "2028-06-01", "2028-07-07", "2028-08-08"]);
+  // Booked dates that only have ONE Elope on them (no full-day wedding, no second Elope). The view-only availability calendar shows these as
+  // "Room for one more Elope". Claude keeps this list in step with Studio Ninja every time BOOKED changes. The booking calendar itself doesn't use it.
+  const ELOPE_ONE=["2026-12-02","2026-12-29","2027-01-05","2027-02-26","2027-03-05","2027-03-14","2027-04-01","2027-05-04","2027-05-28","2027-06-01","2027-07-29","2027-09-01","2027-11-06","2028-03-25","2028-06-01"];
   const pad=n=>String(n).padStart(2,"0");
   const key=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
   const today=(()=>{const d=new Date();d.setHours(0,0,0,0);return d;})();
