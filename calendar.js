@@ -2,7 +2,8 @@
    Loaded on the website by:  <div id="stu-calendar"></div><script src="https://stutuckerphotography.github.io/stu-calendar/calendar.js"></script>
    Edit this file (dates, prices, rules) and the website updates automatically.
    KEEP IN SYNC: Stu's CRM shows this same calendar. After ANY change here, run
-   python3 tools/sync_crm_calendar.py <crm index.html> and republish the CRM, so both always look and work the same. */
+   python3 tools/sync_crm_calendar.py <crm index.html> and republish the CRM, so both always look and work the same.
+   availability.js (the view-only calendar) reads BOOKED, CLOSED, SCHOOL_CLOSED, OWN_CLOSED, FAMILY and FAMILY_BLOCK_DAYS from this file, so keep those names and their one-line format. */
 // ON/OFF SWITCH: false = the calendar shows nothing anywhere it's embedded (the code, dates and CRM copy are untouched). Set to true to switch it back on.
 var STU_CALENDAR_ON=false;
 (function(){
