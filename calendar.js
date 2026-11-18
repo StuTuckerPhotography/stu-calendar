@@ -36,7 +36,7 @@ var STU_CALENDAR_ON=false;
   ];
   const DISCOUNT_MONTHS=[0,1,10,11], DISCOUNT=200;           // \u00a3200 off (not Elope) in Jan, Feb, Nov, Dec
   const CLOSED=[[11,24],[11,25],[11,26]];                      // Christmas Eve, Day, Boxing Day
-  const SCHOOL_CLOSED=["2027-02-13","2027-02-14","2027-02-15","2027-02-16","2027-02-17","2027-02-18","2027-02-19","2027-02-20","2027-02-21","2028-05-27","2028-05-28","2028-05-29","2028-05-30","2028-05-31","2028-06-01","2028-06-02","2028-06-03","2028-06-04"];  // school-holiday dates ticked in the dashboard Half term tab (kept in sync by Claude each morning)
+  const SCHOOL_CLOSED=["2027-02-13","2027-02-14","2027-02-15","2027-02-16","2027-02-17","2027-02-18","2027-02-19","2027-02-20","2027-02-21"];  // school-holiday dates ticked in the dashboard Half term tab (kept in sync by Claude each morning)
   const OWN_CLOSED=["2026-10-27","2027-06-02","2027-06-03","2027-06-04","2027-08-01","2027-08-02","2027-08-03","2027-08-04","2027-08-05","2027-08-06","2027-08-07","2027-08-08","2027-08-09","2027-08-10","2027-08-11","2027-08-12","2027-08-13","2027-08-14","2027-08-15","2027-08-16","2027-08-17","2027-08-18","2027-08-19","2027-08-20","2027-08-21","2027-08-22","2027-08-23"];  // your own holiday dates ticked in the dashboard Holidays tab (kept in sync by Claude)
   const HOLIDAYS=new Set([...SCHOOL_CLOSED,...OWN_CLOSED]);                                  // add "YYYY-MM-DD" dates you're away
   // Booked dates come from the dashboard's own bookings list.
